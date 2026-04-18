@@ -1,0 +1,139 @@
+:root {
+  color-scheme: light dark;
+
+  /* Neutral surfaces (warm-tinted toward the accent hue) */
+  --paper: light-dark(oklch(0.975 0.008 60), oklch(0.155 0.010 40));
+  --paper-2: light-dark(oklch(0.945 0.010 60), oklch(0.195 0.010 40));
+  --paper-3: light-dark(oklch(0.915 0.012 60), oklch(0.235 0.010 40));
+
+  --ink: light-dark(oklch(0.18 0.012 50), oklch(0.93 0.010 70));
+  --ink-2: light-dark(oklch(0.42 0.012 50), oklch(0.68 0.010 70));
+  --ink-3: light-dark(oklch(0.62 0.010 50), oklch(0.50 0.010 70));
+
+  --rule: light-dark(oklch(0.82 0.010 55), oklch(0.30 0.010 40));
+  --rule-strong: light-dark(oklch(0.25 0.012 50), oklch(0.90 0.010 70));
+
+  /* Single accent: muted terracotta — marginalia / red-ink annotation */
+  --accent: light-dark(oklch(0.48 0.135 28), oklch(0.70 0.135 32));
+  --accent-ink: light-dark(oklch(0.98 0.006 60), oklch(0.14 0.010 40));
+  --accent-soft: light-dark(oklch(0.92 0.040 30), oklch(0.28 0.050 32));
+
+  /* Algorithm state colors */
+  --state-default: var(--ink-3);
+  --state-compare: var(--accent);
+  --state-swap:    light-dark(oklch(0.62 0.13 68),  oklch(0.74 0.13 70));
+  --state-sorted:  light-dark(oklch(0.52 0.085 150), oklch(0.68 0.09 150));
+  --state-active:  light-dark(oklch(0.38 0.14 28),  oklch(0.78 0.14 32));
+  --state-visited: light-dark(oklch(0.55 0.04 255), oklch(0.66 0.05 255));
+  --state-frontier:light-dark(oklch(0.55 0.08 205), oklch(0.68 0.09 205));
+  --state-path:    light-dark(oklch(0.60 0.13 68),  oklch(0.74 0.13 70));
+
+  /* 4pt scale */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+  --s-9: 96px;
+
+  /* Fluid display sizes (editorial: big contrast between steps) */
+  --fs-display: clamp(2.25rem, 1.4rem + 3.6vw, 4.25rem);
+  --fs-h1:      clamp(1.85rem, 1.4rem + 1.8vw, 2.75rem);
+  --fs-h2:      clamp(1.35rem, 1.15rem + 0.9vw, 1.75rem);
+  --fs-h3:      1.125rem;
+  --fs-body:    1rem;
+  --fs-small:   0.8125rem;
+  --fs-micro:   0.6875rem;
+
+  --lh-tight: 1.08;
+  --lh-display: 1.06;
+  --lh-body: 1.55;
+
+  /* Typefaces — none from the reflex list */
+  --font-serif: 'Spectral', 'Iowan Old Style', 'Palatino', Georgia, serif;
+  --font-sans:  'Onest', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono:  'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --rule-w: 1px;
+  --measure: 64ch;
+
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Explicit theme opt-in for the toggle */
+[data-theme='light'] { color-scheme: light; }
+[data-theme='dark']  { color-scheme: dark; }
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-feature-settings: 'onum' 1, 'liga' 1, 'kern' 1;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Headings: serif, tight */
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  font-weight: 500;
+  margin: 0;
+}
+h1 { font-size: var(--fs-h1); line-height: var(--lh-display); }
+h2 { font-size: var(--fs-h2); line-height: 1.15; }
+h3 { font-size: var(--fs-h3); line-height: 1.25; font-weight: 600; }
+
+p { margin: 0; }
+
+a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: text-decoration-thickness 0.18s var(--ease-out-quart);
+}
+a:hover { text-decoration-thickness: 2px; }
+
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+code, pre, .tabular {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+/* Small-caps metadata label */
+.eyebrow {
+  font-family: var(--font-sans);
+  font-feature-settings: 'smcp' 1, 'c2sc' 1;
+  font-size: var(--fs-micro);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  font-weight: 600;
+}
+
+/* Reusable hairline */
+.rule {
+  border: 0;
+  border-top: var(--rule-w) solid var(--rule);
+  margin: 0;
+}

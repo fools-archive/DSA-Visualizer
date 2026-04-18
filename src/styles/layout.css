@@ -1,0 +1,173 @@
+.app-shell {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+}
+
+/* ── Masthead ─────────────────────────────────────────────── */
+.masthead {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  gap: var(--s-5);
+  padding: var(--s-5) clamp(var(--s-5), 4vw, var(--s-8)) var(--s-3);
+  border-bottom: var(--rule-w) solid var(--rule);
+}
+.masthead-brand {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-3);
+  text-decoration: none;
+  color: var(--ink);
+}
+.masthead-brand .mark {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.75rem;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.masthead-brand .vol {
+  font-family: var(--font-sans);
+  font-feature-settings: 'smcp' 1;
+  font-size: var(--fs-micro);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.masthead-nav {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--s-5);
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+}
+.masthead-nav a {
+  color: var(--ink-2);
+  text-decoration: none;
+  padding-bottom: 2px;
+  border-bottom: 1px solid transparent;
+  transition: color 0.18s var(--ease-out-quart), border-color 0.18s var(--ease-out-quart);
+}
+.masthead-nav a:hover { color: var(--ink); }
+.masthead-nav a.active {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+.masthead-utility {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+/* Thin date line under the masthead — the "running head" of a printed book */
+.masthead-runline {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--s-2) clamp(var(--s-5), 4vw, var(--s-8));
+  border-bottom: var(--rule-w) solid var(--rule);
+  font-family: var(--font-sans);
+  font-feature-settings: 'smcp' 1;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink-3);
+}
+
+/* ── Main ─────────────────────────────────────────────────── */
+.app-main {
+  padding: clamp(var(--s-5), 3.2vw, var(--s-7)) clamp(var(--s-5), 4vw, var(--s-8)) var(--s-8);
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ── Page head (chapter-style) ─────────────────────────────── */
+.page-head {
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-6) 0 var(--s-5);
+  border-bottom: var(--rule-w) solid var(--rule);
+  margin-bottom: var(--s-6);
+}
+.page-head .chapter {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-3);
+}
+.page-head .chapter-num {
+  font-family: var(--font-sans);
+  font-feature-settings: 'smcp' 1;
+  font-size: var(--fs-micro);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+}
+.page-head .chapter-tag {
+  font-family: var(--font-sans);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.page-head h1 {
+  font-size: var(--fs-display);
+  line-height: var(--lh-display);
+  font-weight: 400;
+  max-width: 22ch;
+}
+.page-head .dek {
+  font-size: 1.125rem;
+  line-height: 1.5;
+  color: var(--ink-2);
+  font-style: italic;
+  max-width: 58ch;
+}
+
+/* ── Two-column study layout ──────────────────────────────── */
+.study {
+  display: grid;
+  grid-template-columns: 18rem 1fr;
+  gap: clamp(var(--s-5), 3vw, var(--s-7));
+  align-items: start;
+}
+.study-aside {
+  position: sticky;
+  top: var(--s-5);
+  display: grid;
+  gap: var(--s-5);
+}
+.study-main {
+  display: grid;
+  gap: var(--s-5);
+  min-width: 0;
+}
+
+@media (max-width: 880px) {
+  .study { grid-template-columns: 1fr; }
+  .study-aside { position: static; }
+  .masthead { grid-template-columns: 1fr; gap: var(--s-3); padding-bottom: var(--s-4); }
+  .masthead-nav { justify-content: flex-start; }
+  .masthead-utility { justify-content: flex-start; }
+}
+
+/* ── Colophon / footer ────────────────────────────────────── */
+.colophon {
+  border-top: var(--rule-w) solid var(--rule);
+  padding: var(--s-5) clamp(var(--s-5), 4vw, var(--s-8));
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s-4);
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  color: var(--ink-3);
+}
+.colophon em {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  color: var(--ink-2);
+  font-style: italic;
+}
