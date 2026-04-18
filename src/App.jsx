@@ -4,6 +4,11 @@ import HomePage from './pages/HomePage.jsx';
 import SortingPage from './pages/SortingPage.jsx';
 import TreePage from './pages/TreePage.jsx';
 import GraphPage from './pages/GraphPage.jsx';
+import HeapPage from './pages/HeapPage.jsx';
+import UnionFindPage from './pages/UnionFindPage.jsx';
+import GridPage from './pages/GridPage.jsx';
+import DPPage from './pages/DPPage.jsx';
+import ComparePage from './pages/ComparePage.jsx';
 import AboutPage from './pages/AboutPage.jsx';
 
 export default function App() {
@@ -16,6 +21,11 @@ export default function App() {
           <Route path="/sorting" element={<SortingPage />} />
           <Route path="/tree" element={<TreePage />} />
           <Route path="/graph" element={<GraphPage />} />
+          <Route path="/heap" element={<HeapPage />} />
+          <Route path="/union-find" element={<UnionFindPage />} />
+          <Route path="/grid" element={<GridPage />} />
+          <Route path="/dp" element={<DPPage />} />
+          <Route path="/compare" element={<ComparePage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

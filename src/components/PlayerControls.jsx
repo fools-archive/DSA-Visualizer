@@ -1,9 +1,17 @@
+import { formatStep } from '../engine/stepFormat.js';
+
 export default function PlayerControls({ player }) {
   const { playing, index, totalSteps, empty, speed, controls, currentStep } = player;
   const atEnd = index >= totalSteps;
   return (
     <div className="player">
       <div className="player-controls">
+        <button className="btn ghost" onClick={controls.reset} disabled={empty || index === 0} aria-label="Reset">
+          ⏮
+        </button>
+        <button className="btn" onClick={controls.stepBackward} disabled={empty || index === 0} aria-label="Step back">
+          ←
+        </button>
         {!playing ? (
           <button className="btn primary" onClick={controls.play} disabled={empty || atEnd}>
             Play
@@ -11,14 +19,8 @@ export default function PlayerControls({ player }) {
         ) : (
           <button className="btn" onClick={controls.pause}>Pause</button>
         )}
-        <button className="btn" onClick={controls.stepBackward} disabled={empty || index === 0} aria-label="Step back">
-          ←
-        </button>
         <button className="btn" onClick={controls.stepForward} disabled={empty || atEnd} aria-label="Step forward">
           →
-        </button>
-        <button className="btn ghost" onClick={controls.reset} disabled={empty || index === 0}>
-          Reset
         </button>
         <span className="spacer" />
         <label className="speed">
@@ -36,6 +38,18 @@ export default function PlayerControls({ player }) {
           {String(index).padStart(2, '0')} / {String(totalSteps).padStart(2, '0')}
         </span>
       </div>
+      <div className="player-scrubber">
+        <input
+          type="range"
+          min="0"
+          max={Math.max(0, totalSteps)}
+          step="1"
+          value={index}
+          onChange={(e) => controls.jumpToIndex(Number(e.target.value))}
+          disabled={empty}
+          aria-label="Scrub to step"
+        />
+      </div>
       <div className="step-readout">
         {currentStep
           ? formatStep(currentStep)
@@ -45,26 +59,4 @@ export default function PlayerControls({ player }) {
       </div>
     </div>
   );
-}
-
-function formatStep(s) {
-  switch (s.type) {
-    case 'compare': return `compare(${s.indices.join(', ')})`;
-    case 'swap': return `swap(${s.indices.join(', ')})`;
-    case 'overwrite': return `overwrite(index=${s.index}, value=${s.value})`;
-    case 'mark-sorted': return `mark-sorted(${s.index})`;
-    case 'visit': return `visit node ${s.nodeId}`;
-    case 'compare-node': return `compare at node ${s.nodeId} with ${s.value}`;
-    case 'insert': return `insert ${s.value} as ${s.side} child of ${s.parentId ?? 'root'}`;
-    case 'delete': return `delete node ${s.nodeId}`;
-    case 'replace-value': return `replace value at ${s.nodeId} → ${s.value}`;
-    case 'visit-node': return `visit ${s.nodeId}`;
-    case 'traverse-edge': return `traverse ${s.from} → ${s.to}`;
-    case 'enqueue': return `enqueue ${s.nodeId}`;
-    case 'dequeue': return `dequeue ${s.nodeId}`;
-    case 'push': return `push ${s.nodeId}`;
-    case 'pop': return `pop ${s.nodeId}`;
-    case 'note': return s.message;
-    default: return JSON.stringify(s);
-  }
 }

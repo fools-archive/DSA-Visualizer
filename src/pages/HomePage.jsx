@@ -19,15 +19,50 @@ const chapters = [
     num: 'III',
     to: '/graph',
     title: 'Graphs',
-    desc: 'Frontiers and visits: breadth-first and depth-first over a small graph.',
+    desc: 'Frontiers and visits: breadth-first search, depth-first search, Dijkstra, and cycle detection.',
     folio: 'p. 03'
+  },
+  {
+    num: 'IV',
+    to: '/heap',
+    title: 'Heaps',
+    desc: 'The priority queue as a binary tree packed into an array — sift up, sift down.',
+    folio: 'p. 04'
+  },
+  {
+    num: 'V',
+    to: '/union-find',
+    title: 'Union-Find',
+    desc: 'Disjoint sets flatten under path compression; rank decides the merger.',
+    folio: 'p. 05'
+  },
+  {
+    num: 'VI',
+    to: '/grid',
+    title: 'Pathfinding',
+    desc: 'BFS, Dijkstra and A* across a grid — click to draw walls and watch frontiers bend.',
+    folio: 'p. 06'
+  },
+  {
+    num: 'VII',
+    to: '/dp',
+    title: 'Dynamic programming',
+    desc: 'Tables that fill themselves. Fibonacci, knapsack, and LCS with dependency arrows.',
+    folio: 'p. 07'
+  },
+  {
+    num: 'VIII',
+    to: '/compare',
+    title: 'Comparison',
+    desc: 'Two sorting algorithms on the same input, side by side — locked or free.',
+    folio: 'p. 08'
   },
   {
     num: '§',
     to: '/about',
     title: 'Colophon & Architecture',
     desc: 'How the book is set: the four layers, the step event, and how to add an entry.',
-    folio: 'p. 04'
+    folio: 'p. 09'
   }
 ];
 

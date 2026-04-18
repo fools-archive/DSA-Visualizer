@@ -4,29 +4,38 @@ import PlayerControls from '../components/PlayerControls.jsx';
 import AlgorithmSelect from '../components/AlgorithmSelect.jsx';
 import InputPanel from '../components/InputPanel.jsx';
 import Legend from '../components/Legend.jsx';
+import MetricsPanel from '../components/MetricsPanel.jsx';
+import DebugPanel from '../components/DebugPanel.jsx';
 import SortingCanvas from '../visualizers/SortingCanvas.jsx';
-import bubbleSort from '../algorithms/sorting/bubbleSort.js';
-import selectionSort from '../algorithms/sorting/selectionSort.js';
-import insertionSort from '../algorithms/sorting/insertionSort.js';
+import SnapshotShare from '../components/SnapshotShare.jsx';
+import { sortingAlgorithms, getAlgorithm } from '../algorithms/registry.js';
 import { randomArray, parseIntList } from '../utils/random.js';
-
-const ALGOS = {
-  bubble: { label: 'Bubble Sort', fn: bubbleSort },
-  selection: { label: 'Selection Sort', fn: selectionSort },
-  insertion: { label: 'Insertion Sort', fn: insertionSort }
-};
+import { readSnapshotFromHash } from '../engine/persistence.js';
 
 export default function SortingPage() {
-  const [algo, setAlgo] = useState('bubble');
-  const [array, setArray] = useState(() => randomArray(12));
-  const [inputStr, setInputStr] = useState(() => array.join(', '));
+  // Restore-from-URL runs once on mount. If the hash carries a sorting
+  // snapshot, seed (algo, array, index) from it so the link reproduces
+  // exactly the state it was shared from.
+  const initial = (() => {
+    const snap = readSnapshotFromHash();
+    if (snap && snap.category === 'sorting' && Array.isArray(snap.input?.array)) {
+      return { algo: snap.algoId || 'bubble', array: snap.input.array, index: snap.index | 0 };
+    }
+    return null;
+  })();
+
+  const [algo, setAlgo] = useState(initial?.algo ?? 'bubble');
+  const [array, setArray] = useState(() => initial?.array ?? randomArray(12));
+  const [inputStr, setInputStr] = useState(() => (initial?.array ?? array).join(', '));
   const [error, setError] = useState(null);
   const player = usePlayer([]);
 
-  const steps = useMemo(() => ALGOS[algo].fn(array), [algo, array]);
+  const entry = getAlgorithm('sorting', algo) ?? sortingAlgorithms[0];
+  const steps = useMemo(() => entry.fn(array), [entry, array]);
 
   useEffect(() => {
     player.controls.loadSteps(steps);
+    if (initial?.index) player.controls.jumpToIndex(initial.index);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [steps]);
 
@@ -55,8 +64,9 @@ export default function SortingPage() {
         </div>
         <h1>Sorting.</h1>
         <p className="dek">
-          Three elementary methods, rendered as figures. Each emits a sequence of <em>compare</em>,
-          <em> swap</em>, and <em> overwrite</em> events — the canvas reduces the sequence into
+          Six methods, rendered as figures. Each emits a sequence of <em>compare</em>,
+          <em> swap</em>, <em> overwrite</em>, and — for the divide-and-conquer pair —
+          <em> pivot</em> and <em> range</em> events. The canvas reduces the sequence into
           a bar chart frame-by-frame.
         </p>
       </header>
@@ -72,7 +82,7 @@ export default function SortingPage() {
               label="Method"
               value={algo}
               onChange={setAlgo}
-              options={Object.entries(ALGOS).map(([v, a]) => ({ value: v, label: a.label }))}
+              options={sortingAlgorithms.map((a) => ({ value: a.id, label: a.label }))}
             />
             <InputPanel
               label="Input array"
@@ -96,10 +106,14 @@ export default function SortingPage() {
                 { label: 'Resting', color: 'var(--state-default)' },
                 { label: 'Under comparison', color: 'var(--state-compare)' },
                 { label: 'Moved this step', color: 'var(--state-swap)' },
+                { label: 'Pivot / active range', color: 'var(--accent)' },
                 { label: 'In final place', color: 'var(--state-sorted)' }
               ]}
             />
           </div>
+          <MetricsPanel player={player} category="sorting" />
+          <SnapshotShare category="sorting" algoId={algo} input={{ array }} index={player.index} />
+          <DebugPanel player={player} category="sorting" algoId={algo} input={{ array }} />
         </aside>
 
         <section className="study-main">
@@ -109,7 +123,10 @@ export default function SortingPage() {
             </div>
             <figcaption className="figure-caption">
               <span className="fig-num">Fig. 1.1</span>
-              <span><em>{ALGOS[algo].label}</em> on an array of length {array.length}.</span>
+              <span>
+                <em>{entry.label}</em> on an array of length {array.length}.
+                {entry.complexity && <> &nbsp;— <span className="tabular">{entry.complexity.time}</span> time, <span className="tabular">{entry.complexity.space}</span> space.</>}
+              </span>
             </figcaption>
           </figure>
           <PlayerControls player={player} />

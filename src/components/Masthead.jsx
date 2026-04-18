@@ -6,6 +6,11 @@ const links = [
   { to: '/sorting', label: 'Sorting' },
   { to: '/tree', label: 'Trees' },
   { to: '/graph', label: 'Graphs' },
+  { to: '/heap', label: 'Heaps' },
+  { to: '/union-find', label: 'Union-Find' },
+  { to: '/grid', label: 'Pathfinding' },
+  { to: '/dp', label: 'DP' },
+  { to: '/compare', label: 'Compare' },
   { to: '/about', label: 'Colophon' }
 ];
 
@@ -14,6 +19,11 @@ const chapterForPath = (p) => {
   if (p.startsWith('/sorting')) return 'Chapter I · Sorting';
   if (p.startsWith('/tree')) return 'Chapter II · Trees';
   if (p.startsWith('/graph')) return 'Chapter III · Graphs';
+  if (p.startsWith('/heap')) return 'Chapter IV · Heaps';
+  if (p.startsWith('/union-find')) return 'Chapter V · Union-Find';
+  if (p.startsWith('/grid')) return 'Chapter VI · Pathfinding';
+  if (p.startsWith('/dp')) return 'Chapter VII · Dynamic Programming';
+  if (p.startsWith('/compare')) return 'Chapter VIII · Comparison';
   if (p.startsWith('/about')) return 'Colophon';
   return '';
 };

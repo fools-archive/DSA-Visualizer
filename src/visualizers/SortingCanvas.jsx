@@ -5,6 +5,8 @@ function reduceSteps(initial, steps, upTo) {
   const sorted = new Set();
   let active = new Set();
   let swapping = new Set();
+  let pivotIndex = null;
+  let range = null;
   for (let i = 0; i < upTo; i++) {
     const s = steps[i];
     if (!s) continue;
@@ -27,10 +29,16 @@ function reduceSteps(initial, steps, upTo) {
       case 'mark-sorted':
         sorted.add(s.index);
         break;
+      case 'pivot':
+        pivotIndex = s.index;
+        break;
+      case 'range-highlight':
+        range = { lo: s.lo, hi: s.hi };
+        break;
       default: break;
     }
   }
-  return { arr, sorted, active, swapping };
+  return { arr, sorted, active, swapping, pivotIndex, range };
 }
 
 export default function SortingCanvas({ initial, steps, index }) {
@@ -45,9 +53,24 @@ export default function SortingCanvas({ initial, steps, index }) {
   const gap = 6;
   const barW = n > 0 ? (W - padX * 2 - gap * (n - 1)) / n : 0;
   const plotH = H - padTop - padBottom;
+  const xOf = (i) => padX + i * (barW + gap);
 
   return (
     <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet" role="img" aria-label="Sorting figure">
+      {view.range && (
+        <rect
+          x={xOf(view.range.lo) - 3}
+          y={padTop - 6}
+          width={xOf(view.range.hi) + barW - xOf(view.range.lo) + 6}
+          height={plotH + 12}
+          fill="var(--accent)"
+          fillOpacity="0.06"
+          stroke="var(--accent)"
+          strokeOpacity="0.25"
+          strokeDasharray="2 3"
+        />
+      )}
+
       <line
         x1={padX - 8} x2={W - padX + 8}
         y1={H - padBottom} y2={H - padBottom}
@@ -65,13 +88,15 @@ export default function SortingCanvas({ initial, steps, index }) {
 
       {view.arr.map((v, i) => {
         const h = (v / max) * plotH;
-        const x = padX + i * (barW + gap);
+        const x = xOf(i);
         const y = H - padBottom - h;
+        const isPivot = i === view.pivotIndex;
         let fill = 'var(--state-default)';
         if (view.sorted.has(i)) fill = 'var(--state-sorted)';
         else if (view.swapping.has(i)) fill = 'var(--state-swap)';
         else if (view.active.has(i)) fill = 'var(--state-compare)';
-        const isHighlighted = view.active.has(i) || view.swapping.has(i);
+        else if (isPivot) fill = 'var(--accent)';
+        const isHighlighted = view.active.has(i) || view.swapping.has(i) || isPivot;
         return (
           <g key={i}>
             <rect
@@ -82,6 +107,16 @@ export default function SortingCanvas({ initial, steps, index }) {
               rx="0"
               style={{ transition: 'fill 180ms cubic-bezier(0.25,1,0.5,1)' }}
             />
+            {isPivot && (
+              <rect
+                x={x - 2} y={y - 2}
+                width={barW + 4} height={h + 4}
+                fill="none"
+                stroke="var(--accent)"
+                strokeWidth="1"
+                strokeDasharray="3 2"
+              />
+            )}
             {barW > 12 && (
               <text
                 x={x + barW / 2}

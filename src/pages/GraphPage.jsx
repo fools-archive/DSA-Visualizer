@@ -3,29 +3,40 @@ import usePlayer from '../engine/usePlayer.js';
 import PlayerControls from '../components/PlayerControls.jsx';
 import AlgorithmSelect from '../components/AlgorithmSelect.jsx';
 import Legend from '../components/Legend.jsx';
+import MetricsPanel from '../components/MetricsPanel.jsx';
+import DebugPanel from '../components/DebugPanel.jsx';
 import GraphCanvas from '../visualizers/GraphCanvas.jsx';
-import bfs from '../algorithms/graphs/bfs.js';
-import dfs from '../algorithms/graphs/dfs.js';
-import { sampleGraph } from '../algorithms/graphs/sampleGraph.js';
+import { graphAlgorithms, getAlgorithm } from '../algorithms/registry.js';
+import { sampleGraph, cycleGraph } from '../algorithms/graphs/sampleGraph.js';
 
-const ALGOS = {
-  bfs: { label: 'Breadth-first search' },
-  dfs: { label: 'Depth-first search' }
+const GRAPHS = {
+  sample: { label: 'Weighted sample', graph: sampleGraph },
+  cycle:  { label: 'Cycle demo',      graph: cycleGraph },
 };
-
-const FNS = { bfs, dfs };
 
 export default function GraphPage() {
   const [algo, setAlgo] = useState('bfs');
-  const [start, setStart] = useState('A');
+  const [graphKey, setGraphKey] = useState('sample');
+  const graph = GRAPHS[graphKey].graph;
+  const [start, setStart] = useState(graph.nodes[0].id);
   const player = usePlayer([]);
 
-  const steps = useMemo(() => FNS[algo](sampleGraph, start), [algo, start]);
+  const entry = getAlgorithm('graphs', algo) ?? graphAlgorithms[0];
+  const steps = useMemo(() => entry.fn(graph, start), [entry, graph, start]);
 
   useEffect(() => {
     player.controls.loadSteps(steps);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [steps]);
+
+  useEffect(() => {
+    if (!graph.nodes.some((n) => n.id === start)) setStart(graph.nodes[0].id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [graphKey]);
+
+  useEffect(() => {
+    if (algo === 'cycle' && graphKey !== 'cycle') setGraphKey('cycle');
+  }, [algo, graphKey]);
 
   return (
     <>
@@ -36,8 +47,9 @@ export default function GraphPage() {
         </div>
         <h1>Graphs.</h1>
         <p className="dek">
-          Two disciplines for exploring a graph: breadth-first, which fans out evenly; and
-          depth-first, which commits to a path and backtracks. Same graph, two temperaments.
+          Four disciplines for exploring a graph — breadth and depth; shortest path with
+          <em> Dijkstra</em>; and cycle detection via a DFS recursion stack. Same page,
+          different temperaments.
         </p>
       </header>
 
@@ -52,13 +64,19 @@ export default function GraphPage() {
               label="Method"
               value={algo}
               onChange={setAlgo}
-              options={Object.entries(ALGOS).map(([v, a]) => ({ value: v, label: a.label }))}
+              options={graphAlgorithms.map((a) => ({ value: a.id, label: a.label }))}
+            />
+            <AlgorithmSelect
+              label="Graph"
+              value={graphKey}
+              onChange={setGraphKey}
+              options={Object.entries(GRAPHS).map(([v, g]) => ({ value: v, label: g.label }))}
             />
             <AlgorithmSelect
               label="Start node"
               value={start}
               onChange={setStart}
-              options={sampleGraph.nodes.map((n) => ({ value: n.id, label: n.id }))}
+              options={graph.nodes.map((n) => ({ value: n.id, label: n.id }))}
             />
           </div>
           <div className="block">
@@ -72,20 +90,25 @@ export default function GraphPage() {
                 { label: 'In frontier', color: 'var(--state-frontier)' },
                 { label: 'Active', color: 'var(--state-active)' },
                 { label: 'Visited', color: 'var(--state-visited)' },
-                { label: 'Edge traversed', color: 'var(--state-path)' }
+                { label: 'Edge traversed', color: 'var(--state-path)' },
+                { label: 'Finalized / cycle', color: 'var(--accent)' },
               ]}
             />
           </div>
+          <MetricsPanel player={player} category="graphs" />
+          <DebugPanel player={player} />
         </aside>
 
         <section className="study-main">
           <figure className="figure">
             <div className="figure-frame">
-              <GraphCanvas graph={sampleGraph} steps={player.steps} index={player.index} />
+              <GraphCanvas graph={graph} steps={player.steps} index={player.index} />
             </div>
             <figcaption className="figure-caption">
               <span className="fig-num">Fig. 3.1</span>
-              <span><em>{ALGOS[algo].label}</em> from node <strong>{start}</strong>.</span>
+              <span><em>{entry.label}</em> from node <strong>{start}</strong>
+                {entry.complexity && <> &nbsp;— <span className="tabular">{entry.complexity.time}</span></>}.
+              </span>
             </figcaption>
           </figure>
           <PlayerControls player={player} />
