@@ -1,5 +1,7 @@
 # DSA Visualizer
 
+**Live:** [dsa-visualizer-nu-ten.vercel.app](https://dsa-visualizer-nu-ten.vercel.app/)
+
 A step-event-driven platform for visualizing data structures and algorithms.
 Algorithms are pure functions that emit an ordered list of events; a playback
 engine advances through them; SVG visualizers fold events into a view.
