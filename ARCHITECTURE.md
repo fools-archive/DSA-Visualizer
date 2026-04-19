@@ -122,3 +122,70 @@ src/
     DPPage.jsx
     ComparePage.jsx
 ```
+
+## Phase 4 additions — system unification & intelligent layers
+
+Phase 4 refines (does not rewrite) the engine. New primitives:
+
+### Unified step schema — `engine/schema.js`
+
+Canonical shape:
+
+```js
+{ kind: 'operation' | 'annotation',
+  domain: 'array' | 'tree' | 'graph' | 'grid' | 'dp' | 'shared',
+  action: string,
+  payload: object }
+```
+
+- `toUnified(step)` — normalizes legacy `{type, ...}` or canonical steps.
+- `makeStep(domain, action, payload)` — forward-looking factory; emits
+  both the new fields and the legacy flat projection so existing canvases
+  keep working without a single edit.
+- `TYPE_TABLE` — maps every known legacy `type` to `(domain, action, kind)`.
+
+### Domain adapters — `engine/adapters/`
+
+Each domain (array, tree, graph, grid, dp) ships an adapter with a tiny
+interface:
+
+```js
+adapter.initialize(input)   // seed from the algorithm's input
+adapter.applyStep(step)     // mutate internal state
+adapter.getState()          // plain-object snapshot (safe to serialize)
+adapter.reset()             // back to freshly-initialized
+adapter.clone()             // independent copy (for the comparison engine)
+adapter.__restore(snap)     // rehydrate from a snapshot
+```
+
+Adapters centralize the reducer logic canvases used to inline, and they
+give the checkpoint system a domain-agnostic "state at step i" primitive.
+`getAdapter(domain, config)` from `adapters/index.js` is the registry.
+
+### Checkpointed execution context — `engine/checkpoints.js`
+
+```js
+const ctx = createExecutionContext({ domain, steps, input, interval: 50 });
+ctx.seekTo(1234);    // O(interval), not O(1234)
+ctx.getState();       // adapter snapshot at step 1234
+```
+
+Snapshots are built lazily on the first seek past the last checkpoint,
+so short runs never pay the cost. `seekTo` finds the nearest snapshot
+≤ i and replays ≤ interval steps — turning jump-to-late-step from O(i)
+to O(N).
+
+### Explanation layer — `engine/explain.js`
+
+Templates keyed on `"domain/action"`, evaluated over the normalized
+payload:
+
+```js
+explain({ type: 'swap', indices: [3, 7] })
+// "Swapping indices 3 and 7 to restore order."
+
+explainRange(steps, 0, 500)
+// "500 steps: 324 × compare, 112 × swap, 20 × mark-sorted."
+```
+
+Used by the debug panel and the upcoming execution-trace viewer.
