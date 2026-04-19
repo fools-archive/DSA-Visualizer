@@ -11,7 +11,7 @@ import { toUnified } from '../schema.js';
 
 export function createTreeAdapter() {
   let initial = null;
-  let state = fresh(null);
+  let state = fresh();
 
   function applyStep(step) {
     const u = toUnified(step);
@@ -83,9 +83,9 @@ export function createTreeAdapter() {
   return {
     initialize(input) {
       initial = input ?? null;
-      state = fresh(initial);
+      state = fresh();
     },
-    reset() { state = fresh(initial); },
+    reset() { state = fresh(); },
     applyStep,
     getState() {
       return {
@@ -114,7 +114,7 @@ export function createTreeAdapter() {
   };
 }
 
-function fresh(_input) {
+function fresh() {
   return {
     nodes: new Map(),
     rootId: null,

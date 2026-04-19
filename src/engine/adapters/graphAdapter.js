@@ -56,14 +56,18 @@ export function createGraphAdapter() {
         break;
       case 'uf-find':
       case 'uf-compress':
-        if (p.x != null && p.root != null) state.ufParent.set(p.x, p.root);
-        state.active.add(p.x);
+        if (p.x != null) {
+          if (p.root != null) state.ufParent.set(p.x, p.root);
+          state.active.add(p.x);
+        }
         break;
       case 'uf-union':
-        if (p.a != null && p.newRoot != null) state.ufParent.set(p.a, p.newRoot);
-        if (p.b != null && p.newRoot != null) state.ufParent.set(p.b, p.newRoot);
-        state.active.add(p.a);
-        state.active.add(p.b);
+        if (p.newRoot != null) {
+          if (p.a != null) state.ufParent.set(p.a, p.newRoot);
+          if (p.b != null) state.ufParent.set(p.b, p.newRoot);
+        }
+        if (p.a != null) state.active.add(p.a);
+        if (p.b != null) state.active.add(p.b);
         break;
       default: break;
     }
