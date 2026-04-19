@@ -113,7 +113,7 @@ export default function SortingPage() {
           </div>
           <MetricsPanel player={player} category="sorting" />
           <SnapshotShare category="sorting" algoId={algo} input={{ array }} index={player.index} />
-          <DebugPanel player={player} category="sorting" algoId={algo} input={{ array }} />
+          <DebugPanel player={player} category="sorting" algoId={algo} input={{ array }} adapterInput={array} />
         </aside>
 
         <section className="study-main">

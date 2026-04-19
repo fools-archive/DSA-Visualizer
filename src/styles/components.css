@@ -628,6 +628,40 @@ table.complexity td .tabular {
   overflow-x: auto;
 }
 
+.debug-explain {
+  margin: var(--s-3) 0 var(--s-2);
+  padding: var(--s-2) var(--s-3);
+  border-left: 2px solid var(--accent);
+  font-family: var(--font-text, inherit);
+  font-size: var(--fs-small);
+  color: var(--ink);
+  line-height: 1.45;
+}
+
+.debug-recap {
+  margin: 0 0 var(--s-2);
+  font-family: var(--font-text, inherit);
+  font-size: var(--fs-micro);
+  color: color-mix(in oklch, var(--ink) 68%, transparent);
+  line-height: 1.4;
+}
+.debug-recap .sc {
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+  margin-right: 0.4em;
+  color: color-mix(in oklch, var(--ink) 55%, transparent);
+}
+
+.debug-adapter { margin-top: var(--s-3); }
+.debug-adapter > summary {
+  cursor: pointer;
+  padding: var(--s-1) 0;
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+  color: color-mix(in oklch, var(--ink) 70%, transparent);
+}
+.debug-adapter[open] > summary { color: var(--ink); }
+
 /* Grid cells hover affordance when wall-edit is on */
 .figure-frame svg rect[style*="cursor: pointer"]:hover { filter: brightness(0.92); }
 

@@ -140,7 +140,7 @@ export default function DPPage() {
             />
           </div>
           <MetricsPanel player={player} category="dp" />
-          <DebugPanel player={player} category="dp" algoId={problem} />
+          <DebugPanel player={player} category="dp" algoId={problem} adapterInput={{ rows: parsed.rows, cols: parsed.cols }} />
         </aside>
 
         <section className="study-main">

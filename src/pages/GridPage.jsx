@@ -89,7 +89,13 @@ export default function GridPage() {
             />
           </div>
           <MetricsPanel player={player} category="grid" />
-          <DebugPanel player={player} category="grid" algoId={algo} input={{ grid: { rows: grid.rows, cols: grid.cols, walls: [...grid.walls], start: grid.start, end: grid.end } }} />
+          <DebugPanel
+            player={player}
+            category="grid"
+            algoId={algo}
+            input={{ grid: { rows: grid.rows, cols: grid.cols, walls: [...grid.walls], start: grid.start, end: grid.end } }}
+            adapterInput={{ rows: grid.rows, cols: grid.cols, walls: [...grid.walls], start: grid.start, end: grid.end }}
+          />
         </aside>
 
         <section className="study-main">
